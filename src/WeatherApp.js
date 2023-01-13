@@ -4,6 +4,8 @@ import { eventManager } from "./EventManager";
 import { staticRenderer } from "./UIManager";
 import { apiManager } from "./APIManager";
 
+//= =============================================================
+
 staticRenderer.render();
 eventManager.addEventHandler("button", "click", callbackFunc);
 eventManager.setup();
