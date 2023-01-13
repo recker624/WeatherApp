@@ -1,5 +1,7 @@
-const dynamicRenderer = (() => {
-	function render () {
+const dynamicRenderer = (() =>
+{
+	function render ()
+	{
 
 	}
 
@@ -8,9 +10,16 @@ const dynamicRenderer = (() => {
 	};
 })();
 
-const staticRenderer = (() => {
-	function render () {
-
+// ===========================
+const staticRenderer = (() =>
+{
+	function render ()
+	{
+		const btn = `
+      <button id="button">Click me!</button>
+    `;
+		const body = document.querySelector("body");
+		body.insertAdjacentHTML("afterbegin", btn);
 	}
 	return {
 		render
