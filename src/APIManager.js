@@ -6,7 +6,6 @@ const apiManager = (() =>
 	{
 		try
 		{
-			console.log("api called!");
 			const response = await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=${locationCount}&appid=${_appID}`, { mode: "cors" });
 			const locations = await response.json();
 			return locations;
@@ -17,15 +16,23 @@ const apiManager = (() =>
 		}
 	}
 
-	async function getWeatherInfo (lat, lon)
+	async function getCurrentWeatherInfo (lat, lon)
 	{
-		const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${_appID}`, { mode: "cors" });
+		const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${_appID}`, { mode: "cors" });
 		const weatherInfo = await response.json();
 		return weatherInfo;
 	}
 
+	async function getWeeklyWeatherInfo (lat, lon)
+	{
+		const response = await fetch(`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${_appID}`, { mode: "cors" });
+		const weeklyWeatherInfo = await response.json();
+		return weeklyWeatherInfo;
+	}
+
 	return {
-		getWeatherInfo,
+		getCurrentWeatherInfo,
+		getWeeklyWeatherInfo,
 		getLocations
 	};
 })();

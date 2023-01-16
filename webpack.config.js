@@ -10,7 +10,9 @@ module.exports = {
 		clean: true
 	},
 	devServer: {
-		static: "./dist"
+		static: path.resolve(__dirname, "dist"),
+		port: 8080,
+		hot: true
 	},
 	devtool: "inline-source-map",
 	plugins: [
@@ -21,10 +23,27 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				test: /\.css$/,
+				test: /\.(scss)$/,
 				use: [
-					"style-loader",
-					"css-loader"
+					{
+						loader: "style-loader"
+					},
+					{
+						loader: "css-loader"
+					},
+					{
+						loader: "postcss-loader",
+						options: {
+							postcssOptions: {
+								plugins: () => [
+									require("autoprefixer")
+								]
+							}
+						}
+					},
+					{
+						loader: "sass-loader"
+					}
 				]
 			}
 		]

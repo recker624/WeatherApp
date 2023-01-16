@@ -1,0 +1,14 @@
+current weather data:
+  temp,   feels like
+  location, country
+  time
+  
+  humidity
+  rain chance
+  wind speed 
+
+weekly weather info:
+  day 
+  temp (max)
+  temp(min)
+  weather type (rainy, windy, sunny etc)

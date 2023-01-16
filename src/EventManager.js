@@ -1,4 +1,4 @@
-import countryData from "./countryCode.json";
+import countryData from "./data/countryCode.json";
 
 const getCountryNames = (() =>
 {
