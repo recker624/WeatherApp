@@ -1,91 +1,64 @@
-import countryData from "./data/countryCode.json";
+import { apiManager } from "./APIManager";
+import { dynamicRenderer } from "./UIManager";
 
-const getCountryNames = (() =>
+export const eventManager = (() =>
 {
 	try
 	{
-		// const _countryData = JSON.parse(countryData);
-
-		async function getCountryFromCode (countryCode)
+		const _locationCoordinates = {};
+		async function _eventDelegator (event)
 		{
-		// eslint-disable-next-line array-callback-return
-			const countryName = countryData.find(function (item, index, array)
+			if (event.target.id === "searchLocationBtn" &&
+          event.currentTarget !== document &&
+          document.getElementById("locationsContainer") == null)
 			{
-				if (countryCode.toUpperCase() === item.code) return true;
-			});
-			return countryName;
-		}
-		return {
-			getCountryFromCode
-		};
-	}
-	catch (error)
-	{
-		console.log(error.message);
-	}
-})();
-
-const eventManager = (() =>
-{
-	try
-	{
-		const _eventHandlers = new Map();
-		/*
-  STRUCTURE OF _eventHandlers:
-  _eventHandlers = {
-    elementID : {
-        eventType_1 : [function_1, funciton_2, function_3, ... ], <-- Callback functions that will run when event eventType_1 is triggered on element with ID as elementID
-        eventType_2 : [function_4, funciton_5, funciton_6, ... ],
-        ...
-      }
-  }
-  */
-
-		function _eventDelegator (event)
-		{
-			// get all the event handlers on the current HTML element
-			if (_eventHandlers.has(event.target.id))
-			{
-				const elementEventData = _eventHandlers.get(event.target.id);
-				if (elementEventData.has(event.type))
+				const locationValue = document.getElementById("searchLocation").value;
+				const result = await apiManager.getLocations(locationValue);
+				const locations = Object.values(result);
+				if (locations.length === 0)
 				{
-					const eventHandlerFunctions = elementEventData.get(event.type);
-					eventHandlerFunctions.forEach((element, index, array) =>
-					{
-						element();
-					});
+					console.warn("Please enter a valid location.");
+					return;
+				}
+
+				const cityAndCountry = getCityAndCountry(locations);
+				dynamicRenderer.displayAvailableLocations(cityAndCountry);
+
+				// add event handler to all available locations
+				addEventHandler("locationsContainer", "click");
+
+				// associate locations with coordinates
+				const location = document.getElementById("locationsContainer").children;
+				for (let i = 0; i < location.length; i++)
+				{
+					_locationCoordinates[location[i].id] = [result[i].lat, result[i].lon];
+				}
+			}
+			else if (event.target != null && event.target.parentElement != null && event.currentTarget === document && event.target.id !== "searchLocationBtn" && event.target.parentElement.id !== "locationsContainer")
+			{
+				dynamicRenderer.removeAvailableLocations();
+			}
+			else if (event.target.parentElement != null && event.target.parentElement.id === "locationsContainer" && event.currentTarget !== document)
+			{
+				let currentWeatherInfo;
+				if (_locationCoordinates !== undefined)
+				{
+					const lat = _locationCoordinates[event.target.id][0];
+					const lon = _locationCoordinates[event.target.id][1];
+					currentWeatherInfo = await apiManager.getCurrentWeatherInfo(lat, lon);
+					console.log(currentWeatherInfo);
 				}
 			}
 		}
 
-		function addEventHandler (elementID, eventType, callback)
+		function addEventHandler (elementID, eventType)
 		{
-			if (_eventHandlers.has(elementID))
-			{
-				const elementEventData = _eventHandlers.get(elementID);
-				if (elementEventData.has(eventType))
-				{
-					const eventHandlerFunctions = elementEventData.get(eventType);
-					eventHandlerFunctions.push(callback);
-					elementEventData.set(eventType, eventHandlerFunctions);
-					_eventHandlers.set(elementID, elementEventData);
-				}
-				else
-				{
-					elementEventData.set(eventType, [callback]);
-					_eventHandlers.set(elementID, elementEventData);
-				}
-			}
-			else
-			{
-				const newElementEventData = new Map();
-				newElementEventData.set(eventType, [callback]);
-				_eventHandlers.set(elementID, newElementEventData);
-			}
+			document.getElementById(elementID).addEventListener(eventType, _eventDelegator);
 		}
 
 		function setup ()
 		{
+			addEventHandler("searchLocationBtn", "click");
 			document.addEventListener("click", _eventDelegator);
 		}
 
@@ -100,4 +73,23 @@ const eventManager = (() =>
 	}
 })();
 
-export { eventManager };
+function getCityAndCountry (locations)
+{
+	const arr = [];
+	locations.forEach(element =>
+	{
+		let found = false;
+		arr.forEach(value =>
+		{
+			if (value[0] === element.name && value[1] === element.country)
+			{
+				found = true;
+			}
+		});
+		if (!found)
+		{
+			arr.push([element.name, element.country]);
+		}
+	});
+	return arr;
+}

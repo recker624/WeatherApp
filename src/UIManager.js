@@ -1,3 +1,30 @@
+import countryData from "./data/countryCode.json";
+
+const getCountryNames = (() =>
+{
+	try
+	{
+		// const _countryData = JSON.parse(countryData);
+
+		function getCountryFromCode (countryCode)
+		{
+		// eslint-disable-next-line array-callback-return
+			const countryName = countryData.find(function (item, index, array)
+			{
+				if (countryCode.toUpperCase() === item.code) return true;
+			});
+			return countryName.name;
+		}
+		return {
+			getCountryFromCode
+		};
+	}
+	catch (error)
+	{
+		console.log(error.message);
+	}
+})();
+
 const dynamicRenderer = (() =>
 {
 	function createWeeklyWeatherData ()
@@ -36,8 +63,8 @@ const dynamicRenderer = (() =>
       </table>
     </div>
     `;
-
-		return weatherData;
+		const subContainer2 = document.querySelector(".subContainer-2");
+		subContainer2.insertAdjacentHTML("afterbegin", weatherData);
 	}
 
 	function createCurrentWeatherData (currentWeatherData)
@@ -74,21 +101,51 @@ const dynamicRenderer = (() =>
       </div>
     </div>
     `;
-
-		return weatherData;
+		const subContainer1 = document.querySelector(".subContainer-1");
+		subContainer1.insertAdjacentHTML("beforeend", weatherData);
 	}
 
-	function createAvailableLocations (weeklyWeatherData)
+	function displayAvailableLocations (cityAndCountry)
 	{
+		// available locations is array of (city, country)
+		const locationsContainer = document.createElement("div");
+		locationsContainer.classList.add("list-group");
+		locationsContainer.id = "locationsContainer";
+		cityAndCountry.forEach((element, index) =>
+		{
+			const location = document.createElement("button");
+			location.classList.add("list-group-item", "list-group-item-action");
+			location.id = "location_" + index.toString();
 
+			// get country name from country code
+			const countryName = getCountryNames.getCountryFromCode(element[1]);
+
+			location.innerText = `${element[0]}, ${countryName}`;
+			locationsContainer.append(location);
+		});
+		const inputBox = document.querySelector(".searchBar .inputBox");
+		inputBox.append(locationsContainer);
+	}
+
+	function removeAvailableLocations ()
+	{
+		const locationsContainer = document.getElementById("locationsContainer");
+		if (locationsContainer != null)
+		{
+			document.getElementById("locationsContainer").remove();
+		}
 	}
 
 	return {
 		createWeeklyWeatherData,
 		createCurrentWeatherData,
-		createAvailableLocations
+		displayAvailableLocations,
+		removeAvailableLocations
 	};
 })();
+
+//= ==================================================================
+//= ==================================================================
 
 const staticRenderer = (() =>
 {
@@ -109,9 +166,13 @@ const staticRenderer = (() =>
 	function _createSearchBar ()
 	{
 		const searchBar = `
-		<div class="searchBar col-lg-6 align-self-center">
-		  <input type="text" class="searchLocation col-6" placeholder="Search Location" >
-		  <button class="btn btn-primary col-4">Search</button>
+		<div class="searchBar col-lg-6 align-self-center row">
+      <div class="inputBox  col-6"> 
+		    <input type="text" class="searchLocation w-100" placeholder="Search Location" id="searchLocation" value="New Delhi">
+      </div>
+      <div class="col-6"> 
+		    <button class="btn btn-primary w-50" id="searchLocationBtn">Search</button>
+      </div>
 		</div>
 		`;
 		return searchBar;
@@ -124,6 +185,7 @@ const staticRenderer = (() =>
 
 		const mainContainer = document.createElement("div");
 		mainContainer.classList.add("mainContainer", "container-lg");
+		mainContainer.id = "mainContainer";
 
 		const subContainer1 = document.createElement("div");
 		subContainer1.classList.add("subContainer-1", "row", "mt-5");
@@ -135,9 +197,6 @@ const staticRenderer = (() =>
 
 		subContainer1.insertAdjacentHTML("afterbegin", "<div class='col-lg-1'></div>");
 		subContainer1.insertAdjacentHTML("afterbegin", searchBar);
-		//= =============================================================
-		subContainer1.insertAdjacentHTML("beforeend", dynamicRenderer.createCurrentWeatherData());
-		subContainer2.insertAdjacentHTML("afterbegin", dynamicRenderer.createWeeklyWeatherData());
 
 		document.querySelector("body").insertAdjacentHTML("afterbegin", navbar);
 		document.querySelector("body").append(mainContainer);
