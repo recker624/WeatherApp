@@ -6,48 +6,63 @@ export const eventManager = (() =>
 	try
 	{
 		const _locationCoordinates = {};
+		// eslint-disable-next-line no-trailing-spaces
+    
 		async function _eventDelegator (event)
 		{
 			if (event.target.id === "searchLocationBtn" &&
           event.currentTarget !== document &&
           document.getElementById("locationsContainer") == null)
 			{
-				const locationValue = document.getElementById("searchLocation").value;
-				const result = await apiManager.getLocations(locationValue);
-				const locations = Object.values(result);
+				const locationInputValue = document.getElementById("searchLocation").value;
+				const locations = await apiManager.getLocations(locationInputValue);
 				if (locations.length === 0)
 				{
 					console.warn("Please enter a valid location.");
 					return;
 				}
 
-				const cityAndCountry = getCityAndCountry(locations);
+				const [cityAndCountry, locationsNew] = getCityAndCountry(locations);
 				dynamicRenderer.displayAvailableLocations(cityAndCountry);
 
 				// add event handler to all available locations
 				addEventHandler("locationsContainer", "click");
 
 				// associate locations with coordinates
-				const location = document.getElementById("locationsContainer").children;
-				for (let i = 0; i < location.length; i++)
+				const locationHTMLElements = document.getElementById("locationsContainer").children;
+				for (let i = 0; i < locationHTMLElements.length; i++)
 				{
-					_locationCoordinates[location[i].id] = [result[i].lat, result[i].lon];
+					_locationCoordinates[locationHTMLElements[i].id] = [locationsNew[i].lat, locationsNew[i].lon];
 				}
 			}
-			else if (event.target != null && event.target.parentElement != null && event.currentTarget === document && event.target.id !== "searchLocationBtn" && event.target.parentElement.id !== "locationsContainer")
+			else if (event.target != null && event.target.parentElement != null && event.currentTarget === document &&
+                event.target.id !== "searchLocationBtn" && event.target.parentElement.id !== "locationsContainer")
 			{
 				dynamicRenderer.removeAvailableLocations();
 			}
-			else if (event.target.parentElement != null && event.target.parentElement.id === "locationsContainer" && event.currentTarget !== document)
+			else if (event.target.parentElement != null && event.target.parentElement.id === "locationsContainer" &&
+        event.currentTarget !== document)
 			{
-				let currentWeatherInfo;
-				if (_locationCoordinates !== undefined)
+				const locationName = event.target.innerText;
+
+				if ((locationName.split(",")[0].trim() !== document.getElementById("city").innerText ||
+            locationName.split(",")[1].trim() !== document.getElementById("country").innerText) &&
+            _locationCoordinates !== undefined)
 				{
+					dynamicRenderer.removeCurrentWeatherInfo();
+					dynamicRenderer.removeWeeklyWeatherInfo();
+
 					const lat = _locationCoordinates[event.target.id][0];
 					const lon = _locationCoordinates[event.target.id][1];
-					currentWeatherInfo = await apiManager.getCurrentWeatherInfo(lat, lon);
-					console.log(currentWeatherInfo);
+
+					const currentWeatherData = await apiManager.getCurrentWeatherInfo(lat, lon);
+					const weeklyWeatherData = await apiManager.getWeeklyWeatherInfo(lat, lon);
+
+					// render current and weekly weather data
+					dynamicRenderer.showCurrentWeatherData(currentWeatherData, locationName);
+					dynamicRenderer.showWeeklyWeatherData(weeklyWeatherData);
 				}
+				dynamicRenderer.removeAvailableLocations();
 			}
 		}
 
@@ -75,11 +90,12 @@ export const eventManager = (() =>
 
 function getCityAndCountry (locations)
 {
-	const arr = [];
+	const cityAndCountryArr = [];
+	const locationsNew = [];
 	locations.forEach(element =>
 	{
 		let found = false;
-		arr.forEach(value =>
+		cityAndCountryArr.forEach(value =>
 		{
 			if (value[0] === element.name && value[1] === element.country)
 			{
@@ -88,8 +104,9 @@ function getCityAndCountry (locations)
 		});
 		if (!found)
 		{
-			arr.push([element.name, element.country]);
+			cityAndCountryArr.push([element.name, element.country]);
+			locationsNew.push(element);
 		}
 	});
-	return arr;
+	return [cityAndCountryArr, locationsNew];
 }
