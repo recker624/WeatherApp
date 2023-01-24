@@ -70,7 +70,7 @@ const dynamicRenderer = (() =>
 		{
 			const weatherData = `
     <div class="weeklyWeather" id="weeklyWeather">
-      <table class="table">
+      <table class="table text-white fs-5">
         <thead>
           <tr>
             <th scope="col"></th>
@@ -84,19 +84,19 @@ const dynamicRenderer = (() =>
         <tbody>
           <tr>
             <th scope="row">Max</th>
-            <td>${_dailyWeatherData[0].main.temp_max}</td>
-            <td>${_dailyWeatherData[1].main.temp_max}</td>
-            <td>${_dailyWeatherData[2].main.temp_max}</td>
-            <td>${_dailyWeatherData[3].main.temp_max}</td>
-            <td>${_dailyWeatherData[4].main.temp_max}</td>
+            <td>${Math.round(_dailyWeatherData[0].main.temp_max)}&#8451;</td>
+            <td>${Math.round(_dailyWeatherData[1].main.temp_max)}&#8451;</td>
+            <td>${Math.round(_dailyWeatherData[2].main.temp_max)}&#8451;</td>
+            <td>${Math.round(_dailyWeatherData[3].main.temp_max)}&#8451;</td>
+            <td>${Math.round(_dailyWeatherData[4].main.temp_max)}&#8451;</td>
           </tr>
           <tr>
             <th scope="row">Min</th>
-            <td>${_dailyWeatherData[0].main.temp_min}</td>
-            <td>${_dailyWeatherData[1].main.temp_min}</td>
-            <td>${_dailyWeatherData[2].main.temp_min}</td>
-            <td>${_dailyWeatherData[3].main.temp_min}</td>
-            <td>${_dailyWeatherData[4].main.temp_min}</td>
+            <td>${Math.round(_dailyWeatherData[0].main.temp_min)}&#8451;</td>
+            <td>${Math.round(_dailyWeatherData[1].main.temp_min)}&#8451;</td>
+            <td>${Math.round(_dailyWeatherData[2].main.temp_min)}&#8451;</td>
+            <td>${Math.round(_dailyWeatherData[3].main.temp_min)}&#8451;</td>
+            <td>${Math.round(_dailyWeatherData[4].main.temp_min)}&#8451;</td>
           </tr>
           <tr>
             <th scope="row"></th>
@@ -117,24 +117,32 @@ const dynamicRenderer = (() =>
 
 	function showCurrentWeatherData (currentWeatherData, locationName)
 	{
+		const dayOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+		const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+		const currentDate = new Date();
 		const weatherData = `
-    <div class="currentWeather col-lg-4 " id ="currentWeather">
-      <div class="temp&Feel row">
-        <div class="col">Feels like : ${currentWeatherData.main.temp}</div>
-        <div class="col">${currentWeatherData.weather[0].description}</div>
+    <div class="currentWeather col-lg-4 text-white" id ="currentWeather">
+      <div class="temp&Feel row justify-content-start">
+        <div class="col-auto fs-1 w-25">${Math.round(currentWeatherData.main.temp)}&#8451;</div>
+        <div class="col-auto fs-1">${currentWeatherData.weather[0].description.toUpperCase()[0] + currentWeatherData.weather[0].description.slice(1)}</div>
       </div>
 
       <div class="row location">
-        <div class="col city" id="city">${locationName.split(",")[0].trim()}</div>
-        <div class="col country" id="country">${locationName.split(",")[1].trim()}</div>
+        <div class="col-auto city fs-4 pe-0" id="city">${locationName.split(",")[0].trim()},</div>
+        <div class="col-auto country fs-4" id="country">${locationName.split(",")[1].trim()}</div>
+      </div>
+      <div class="time row">
+        <div class="col-auto pe-0">${currentDate.getDate()} ${month[currentDate.getMonth()]},</div>
+        <div class="col-auto pe-0">${dayOfWeek[currentDate.getDay()]}</div>
+        <div class="col-auto">${("0" + currentDate.getHours()).slice(-2)}:${("0" + currentDate.getMinutes()).slice(-2)} hrs</div>
       </div>
 
-      <div class="additionalInfo row">
-        <table class="table col">
+      <div class="additionalInfo row mt-4">
+        <table class="table col text-white fs-5">
           <tbody>
             <tr>
               <td>Humidity</td>
-              <td>${currentWeatherData.main.humidity}</td>
+              <td>${currentWeatherData.main.humidity}%</td>
             </tr>
             <tr>
               <td>Cloudiness</td>
@@ -157,7 +165,7 @@ const dynamicRenderer = (() =>
 	{
 		// available locations is array of (city, country)
 		const locationsContainer = document.createElement("div");
-		locationsContainer.classList.add("list-group", "position-absolute");
+		locationsContainer.classList.add("list-group", "position-absolute", "w-50");
 		locationsContainer.id = "locationsContainer";
 		cityAndCountry.forEach((element, index) =>
 		{
@@ -226,12 +234,12 @@ const staticRenderer = (() =>
 	function _createSearchBar ()
 	{
 		const searchBar = `
-		<div class="searchBar col-lg-6 align-self-center row">
-      <div class="inputBox  col-6" position-relative> 
-		    <input type="text" class="searchLocation w-100" placeholder="Search Location" id="searchLocation" value="New Delhi">
+		<div class="searchBar col-lg-6 align-self-center row d-flex justify-content-center">
+      <div class="inputBox  col-6 p-0 w-50"> 
+		    <input type="text" class="searchLocation w-100 rounded-start border-end-0 ps-2" placeholder="Search Location" id="searchLocation" value="New Delhi">
       </div>
-      <div class="col-6"> 
-		    <button class="btn btn-primary w-50" id="searchLocationBtn">Search</button>
+      <div class="col-6 p-0"> 
+		    <button class="btn btn-primary w-50 rounded-end" id="searchLocationBtn">Search</button>
       </div>
 		</div>
 		`;
@@ -254,18 +262,17 @@ const staticRenderer = (() =>
 		const searchBar = _createSearchBar();
 
 		const mainContainer = document.createElement("div");
-		mainContainer.classList.add("mainContainer", "container-lg");
+		mainContainer.classList.add("d-flex", "flex-column", "justify-content-between", "mainContainer", "container-md");
 		mainContainer.id = "mainContainer";
 
 		const subContainer1 = document.createElement("div");
-		subContainer1.classList.add("subContainer-1", "row", "mt-5");
+		subContainer1.classList.add("subContainer-1", "row", "d-flex", "justify-content-between", "mt-5");
 
 		const subContainer2 = document.createElement("div");
 		subContainer2.classList.add("subContainer-2", "mt-5");
 
 		mainContainer.append(subContainer1, subContainer2);
 
-		subContainer1.insertAdjacentHTML("afterbegin", "<div class='col-lg-1'></div>");
 		subContainer1.insertAdjacentHTML("afterbegin", searchBar);
 
 		document.querySelector("body").insertAdjacentHTML("afterbegin", navbar);

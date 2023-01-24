@@ -1,1 +1,55 @@
 @import "~bootstrap/scss/bootstrap";
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap');
+
+html {
+  min-height: 100vh;
+}
+
+body {
+  background: url("../img/DarkBackground.jpg") no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  min-height: 100vh;
+  font-family: 'Source Sans Pro', sans-serif;
+}
+
+.mainContainer {
+  min-height: 90vh;
+  min-width: 80%;
+}
+
+.subContainer-1 {
+  position: relative;
+}
+
+
+.searchBar {
+  position: relative;
+  top: 5vh;
+}
+
+.currentWeather {
+  position: relative;
+  top: 5vh;
+}
+
+.searchLocation,
+#searchLocationBtn {
+  height: 5vh;
+}
+
+#searchLocationBtn {
+  --bs-btn-border-radius: 0;
+}
+
+
+
+//media queries
+@media only screen and (min-width: 992) {
+  .mainContainer .subContainer-2
+  {
+    margin-top: 15vh;
+  }
+}

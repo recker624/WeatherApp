@@ -61,6 +61,7 @@ export const eventManager = (() =>
 					// render current and weekly weather data
 					dynamicRenderer.showCurrentWeatherData(currentWeatherData, locationName);
 					dynamicRenderer.showWeeklyWeatherData(weeklyWeatherData);
+					console.log(weeklyWeatherData);
 				}
 				dynamicRenderer.removeAvailableLocations();
 			}
