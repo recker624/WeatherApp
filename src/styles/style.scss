@@ -13,6 +13,11 @@ body {
   background-size: cover;
   min-height: 100vh;
   font-family: 'Source Sans Pro', sans-serif;
+
+  .navbar-brand {
+    font-size: 1.6rem;
+    letter-spacing: 1px;
+  }
 }
 
 .mainContainer {
@@ -28,6 +33,13 @@ body {
 .searchBar {
   position: relative;
   top: 5vh;
+
+  .searchBtn,
+  .inputBox {
+   font-size: 1.2rem; 
+   letter-spacing: 1.5px;
+  }
+
 }
 
 .currentWeather {
