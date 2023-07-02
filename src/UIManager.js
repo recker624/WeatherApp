@@ -222,7 +222,7 @@ const staticRenderer = (() =>
 		const navbar = `
       <nav class="navbar navbar-expand-lg bg-dark">
         <div class="container-fluid">
-          <a class="navbar-brand text-white" href="#">Weatherly</a>
+          <a class="navbar-brand text-white ms-3" href="#">Weatherly</a>
           </div>
         </div>
       </nav>
@@ -239,7 +239,7 @@ const staticRenderer = (() =>
 		    <input type="text" class="searchLocation w-100 rounded-start border-end-0 ps-2" placeholder="Search Location" id="searchLocation" value="New Delhi">
       </div>
       <div class="col-6 p-0"> 
-		    <button class="btn btn-primary w-50 rounded-end" id="searchLocationBtn">Search</button>
+		    <button class="searchBtn btn btn-primary w-50 rounded-end" id="searchLocationBtn">Search</button>
       </div>
 		</div>
 		`;

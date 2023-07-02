@@ -45,7 +45,7 @@ export const eventManager = (() =>
 			{
 				const locationName = event.target.innerText;
 
-				if ((locationName.split(",")[0].trim() !== document.getElementById("city").innerText ||
+				if ((locationName.split(",")[0].trim() !== document.getElementById("city").innerText.split(",")[0].trim() ||
             locationName.split(",")[1].trim() !== document.getElementById("country").innerText) &&
             _locationCoordinates !== undefined)
 				{
