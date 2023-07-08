@@ -100,11 +100,11 @@ const dynamicRenderer = (() =>
           </tr>
           <tr>
             <th scope="row"></th>
-            <td><img src="${"http://openweathermap.org/img/w/" + _dailyWeatherData[0].weather[0].icon + ".png"}"></td>
-            <td><img src="${"http://openweathermap.org/img/w/" + _dailyWeatherData[1].weather[0].icon + ".png"}"></td>
-            <td><img src="${"http://openweathermap.org/img/w/" + _dailyWeatherData[2].weather[0].icon + ".png"}"></td>
-            <td><img src="${"http://openweathermap.org/img/w/" + _dailyWeatherData[3].weather[0].icon + ".png"}"></td>
-            <td><img src="${"http://openweathermap.org/img/w/" + _dailyWeatherData[4].weather[0].icon + ".png"}"></td>
+            <td><img src="${"https://openweathermap.org/img/w/" + _dailyWeatherData[0].weather[0].icon + ".png"}"></td>
+            <td><img src="${"https://openweathermap.org/img/w/" + _dailyWeatherData[1].weather[0].icon + ".png"}"></td>
+            <td><img src="${"https://openweathermap.org/img/w/" + _dailyWeatherData[2].weather[0].icon + ".png"}"></td>
+            <td><img src="${"https://openweathermap.org/img/w/" + _dailyWeatherData[3].weather[0].icon + ".png"}"></td>
+            <td><img src="${"https://openweathermap.org/img/w/" + _dailyWeatherData[4].weather[0].icon + ".png"}"></td>
           </tr>
         </tbody>
       </table>
