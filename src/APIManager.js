@@ -6,7 +6,7 @@ const apiManager = (() =>
 	{
 		try
 		{
-			const response = await fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=${locationCount}&appid=${_appID}`, { mode: "cors" });
+			const response = await fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${city}&limit=${locationCount}&appid=${_appID}`, { mode: "cors" });
 			const locations = await response.json();
 			return locations;
 		}
